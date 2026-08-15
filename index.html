@@ -117,8 +117,8 @@
 
   /* ---------- MARQUEE ---------- */
   .marquee{ border-top:1px solid rgba(242,239,228,.1); border-bottom:1px solid rgba(242,239,228,.1); padding:22px 0; overflow:hidden; }
-  .marquee-track{ display:flex; gap:60px; white-space:nowrap; animation:scroll 22s linear infinite; width:max-content; }
-  .marquee-track span{ font-family:var(--font-display); font-size:22px; text-transform:uppercase; color:var(--text-onink); display:flex; align-items:center; gap:60px; }
+  .marquee-track{ display:flex; gap:0; white-space:nowrap; animation:scroll 22s linear infinite; width:max-content; }
+  .marquee-track span{ font-family:var(--font-display); font-size:22px; text-transform:uppercase; color:var(--text-onink); display:flex; align-items:center; gap:60px; margin-right:60px; }
   .marquee-track span em{ font-style:normal; color:var(--coral); }
   @keyframes scroll{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
 
@@ -160,6 +160,15 @@
   .g6{ grid-column:span 1; grid-row:span 2; background:var(--coral); color:var(--paper); }
   .g7{ grid-column:span 1; grid-row:span 1; background:var(--yellow); }
   .g8{ grid-column:span 2; grid-row:span 1; background:var(--teal); }
+
+  /* filtered gallery — real per-format aspect ratios, mosaic spans off */
+  .gallery.filtered{ grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); grid-auto-rows:auto; align-items:start; }
+  .gallery.filtered .g-item{ grid-column:auto; grid-row:auto; height:auto; }
+  .gallery.filtered .g-item[data-cat="thumbnail"]{ aspect-ratio:16/9; }
+  .gallery.filtered .g-item[data-cat="book"]{ aspect-ratio:8/11; }
+  .gallery.filtered .g-item[data-cat="social"]{ aspect-ratio:1/1; }
+  .gallery.filtered .g-item[data-cat="branding"]{ aspect-ratio:1/1; }
+  .gallery.filtered .g-item[data-cat="video"]{ aspect-ratio:9/16; }
 
   /* ---------- PROCESS ---------- */
   .process{ display:grid; grid-template-columns:repeat(3,1fr); gap:40px; margin-top:64px; }
@@ -258,22 +267,22 @@
         <div class="eyebrow">Selected work</div>
         <h2>A shelf of<br>recent projects</h2>
         <div class="filters">
-          <button class="filter-btn active">All</button>
-          <button class="filter-btn">Thumbnails</button>
-          <button class="filter-btn">Branding</button>
-          <button class="filter-btn">Social</button>
-          <button class="filter-btn">Books</button>
-          <button class="filter-btn">Video</button>
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="thumbnail">Thumbnails</button>
+          <button class="filter-btn" data-filter="branding">Branding</button>
+          <button class="filter-btn" data-filter="social">Social</button>
+          <button class="filter-btn" data-filter="book">Books</button>
+          <button class="filter-btn" data-filter="video">Video</button>
         </div>
         <div class="gallery">
-          <div class="g-item g1"><span class="tag">Thumbnail</span><span class="title">Project 01</span></div>
-          <div class="g-item g2"><span class="tag">Branding</span><span class="title">Project 02</span></div>
-          <div class="g-item g3"><span class="tag">Book Cover</span><span class="title">Project 03</span></div>
-          <div class="g-item g4"><span class="tag">Social</span><span class="title">Project 04</span></div>
-          <div class="g-item g5"><span class="tag">Video</span><span class="title">Project 05</span></div>
-          <div class="g-item g6"><span class="tag">Coloring Book</span><span class="title">Project 06</span></div>
-          <div class="g-item g7"><span class="tag">Thumbnail</span><span class="title">Project 07</span></div>
-          <div class="g-item g8"><span class="tag">Branding</span><span class="title">Project 08</span></div>
+          <div class="g-item g1" data-cat="thumbnail"><span class="tag">Thumbnail</span><span class="title">Project 01</span></div>
+          <div class="g-item g2" data-cat="branding"><span class="tag">Branding</span><span class="title">Project 02</span></div>
+          <div class="g-item g3" data-cat="book"><span class="tag">Book Cover</span><span class="title">Project 03</span></div>
+          <div class="g-item g4" data-cat="social"><span class="tag">Social</span><span class="title">Project 04</span></div>
+          <div class="g-item g5" data-cat="video"><span class="tag">Video</span><span class="title">Project 05</span></div>
+          <div class="g-item g6" data-cat="book"><span class="tag">Coloring Book</span><span class="title">Project 06</span></div>
+          <div class="g-item g7" data-cat="thumbnail"><span class="tag">Thumbnail</span><span class="title">Project 07</span></div>
+          <div class="g-item g8" data-cat="branding"><span class="tag">Branding</span><span class="title">Project 08</span></div>
         </div>
       </div>
     </div>
@@ -321,12 +330,25 @@
 </footer>
 
 <script>
-  // Simple filter interaction for the work gallery (visual only —
-  // wire this to real category data/tags when you add real projects).
+  // Filters the gallery by category. "All" shows the mixed mosaic
+  // layout; any other filter switches to a uniform grid where each
+  // card renders at its real format ratio (16:9, 8:11, 1:1, 9:16).
+  const gallery = document.querySelector('.gallery');
+  const items = document.querySelectorAll('.g-item');
   document.querySelectorAll('.filter-btn').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
       btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      if(filter === 'all'){
+        gallery.classList.remove('filtered');
+        items.forEach(item=>{ item.style.display = ''; });
+      } else {
+        gallery.classList.add('filtered');
+        items.forEach(item=>{
+          item.style.display = (item.dataset.cat === filter) ? '' : 'none';
+        });
+      }
     });
   });
 </script>
