@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Template</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     CUSTOMIZE HERE — change these variables to reskin the whole site.
+     Swap hex values for your own brand colors, or the font names
+     for anything loaded from fonts.google.com (update the <link>
+     above too).
+     ============================================================ */
+  :root{
+    --ink:        #14151F;   /* page background */
+    --ink-soft:   #1D1F2C;   /* card surfaces on dark */
+    --paper:      #F2EFE4;   /* light background / cards */
+    --paper-line: #E4E0D2;
+    --coral:      #FF4B3E;   /* primary accent */
+    --yellow:     #FFC93C;   /* secondary accent */
+    --teal:       #2FBF9F;   /* tertiary accent */
+    --text-onink: #F2EFE4;
+    --text-onink-mute: #9A9CAE;
+    --text-onpaper: #14151F;
+    --text-onpaper-mute: #5B5C66;
+
+    --font-display: "Anton", sans-serif;
+    --font-body: "Space Grotesk", sans-serif;
+    --font-mono: "IBM Plex Mono", monospace;
+
+    --radius: 10px;
+    --container: 1140px;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--ink);
+    color:var(--text-onink);
+    font-family:var(--font-body);
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+  img{ max-width:100%; display:block; }
+  a{ color:inherit; text-decoration:none; }
+  .wrap{ max-width:var(--container); margin:0 auto; padding:0 32px; }
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--coral);
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:14px;
+  }
+  .eyebrow::before{ content:""; width:24px; height:2px; background:var(--coral); }
+  h1,h2,h3{ font-family:var(--font-display); font-weight:400; line-height:1.02; letter-spacing:.01em; text-transform:uppercase; }
+  section{ padding:110px 0; position:relative; }
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:var(--font-mono); font-size:13px; letter-spacing:.06em; text-transform:uppercase;
+    padding:16px 28px; border-radius:999px; border:2px solid var(--coral);
+    background:var(--coral); color:var(--ink); font-weight:500;
+    transition:transform .15s ease, background .15s ease, color .15s ease;
+    cursor:pointer;
+  }
+  .btn:hover{ transform:translateY(-2px); }
+  .btn.ghost{ background:transparent; color:var(--text-onink); border-color:var(--text-onink-mute); }
+  .btn.ghost:hover{ border-color:var(--coral); color:var(--coral); }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(20,21,31,.86); backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(242,239,228,.08);
+  }
+  nav{ display:flex; align-items:center; justify-content:space-between; padding:20px 32px; max-width:var(--container); margin:0 auto; }
+  .logo{ font-family:var(--font-display); font-size:22px; text-transform:uppercase; letter-spacing:.02em; }
+  .logo span{ color:var(--coral); }
+  .nav-links{ display:flex; gap:36px; font-family:var(--font-mono); font-size:13px; text-transform:uppercase; letter-spacing:.05em; }
+  .nav-links a{ color:var(--text-onink-mute); transition:color .15s; }
+  .nav-links a:hover{ color:var(--text-onink); }
+  .nav-cta{ display:none; }
+  @media(min-width:800px){ .nav-cta{ display:inline-flex; } }
+  @media(max-width:800px){ .nav-links{ display:none; } }
+
+  /* ---------- HERO ---------- */
+  .hero{ padding:190px 0 120px; overflow:visible; }
+  .hero-grid{ display:grid; grid-template-columns:1.1fr .9fr; gap:60px; align-items:center; }
+  @media(max-width:900px){ .hero-grid{ grid-template-columns:1fr; } }
+  .hero h1{ font-size:clamp(46px,6.2vw,84px); }
+  .hero h1 em{ font-style:normal; color:var(--coral); }
+  .hero p.lede{ font-size:18px; color:var(--text-onink-mute); max-width:460px; margin:26px 0 36px; }
+  .hero-actions{ display:flex; gap:16px; flex-wrap:wrap; }
+
+  /* fanned format cards — signature element */
+  .format-shelf{ position:relative; height:440px; }
+  .fcard{
+    position:absolute; border-radius:14px; padding:14px;
+    display:flex; flex-direction:column; justify-content:space-between;
+    box-shadow:0 24px 50px -18px rgba(0,0,0,.55);
+    transition:transform .3s ease;
+  }
+  .fcard:hover{ transform:translateY(-10px) rotate(0deg) !important; z-index:20; }
+  .fcard .tag{ font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:.08em; opacity:.85; }
+  .fcard .fmt{ font-family:var(--font-display); font-size:15px; text-transform:uppercase; }
+  .fc1{ width:220px; height:124px; background:var(--yellow); color:var(--ink); left:0; top:40px; transform:rotate(-9deg); z-index:4; }
+  .fc2{ width:160px; height:220px; background:var(--coral); color:var(--ink); left:180px; top:150px; transform:rotate(6deg); z-index:5; }
+  .fc3{ width:150px; height:150px; background:var(--paper); color:var(--ink); left:20px; top:260px; transform:rotate(4deg); z-index:3; }
+  .fc4{ width:120px; height:220px; background:var(--teal); color:var(--ink); left:330px; top:20px; transform:rotate(-5deg); z-index:2; }
+  @media(max-width:900px){ .format-shelf{ height:340px; transform:scale(.82); transform-origin:top left; } }
+
+  /* ---------- MARQUEE ---------- */
+  .marquee{ border-top:1px solid rgba(242,239,228,.1); border-bottom:1px solid rgba(242,239,228,.1); padding:22px 0; overflow:hidden; }
+  .marquee-track{ display:flex; gap:60px; white-space:nowrap; animation:scroll 22s linear infinite; width:max-content; }
+  .marquee-track span{ font-family:var(--font-display); font-size:22px; text-transform:uppercase; color:var(--text-onink-mute); display:flex; align-items:center; gap:60px; }
+  .marquee-track span em{ font-style:normal; color:var(--coral); }
+  @keyframes scroll{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+
+  /* ---------- SERVICES ---------- */
+  .services-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:2px; background:rgba(242,239,228,.1); margin-top:60px; border-radius:16px; overflow:hidden; }
+  @media(max-width:760px){ .services-grid{ grid-template-columns:1fr; } }
+  .service{ background:var(--ink); padding:38px 32px; transition:background .2s; }
+  .service:hover{ background:var(--ink-soft); }
+  .service .num{ font-family:var(--font-mono); font-size:12px; color:var(--coral); }
+  .service h3{ font-size:24px; margin:16px 0 10px; }
+  .service p{ font-size:14px; color:var(--text-onink-mute); }
+
+  /* ---------- WORK / GALLERY ---------- */
+  .work{ background:var(--paper); color:var(--text-onpaper); border-radius:32px; margin:0 20px; padding:100px 40px; }
+  @media(max-width:700px){ .work{ margin:0; border-radius:0; padding:80px 20px; } }
+  .work .eyebrow{ color:var(--coral); }
+  .work h2{ color:var(--text-onpaper); font-size:clamp(34px,4.5vw,52px); }
+  .filters{ display:flex; gap:10px; flex-wrap:wrap; margin:40px 0 44px; }
+  .filter-btn{
+    font-family:var(--font-mono); font-size:12px; text-transform:uppercase; letter-spacing:.05em;
+    padding:10px 18px; border-radius:999px; border:1.5px solid var(--paper-line); background:transparent;
+    color:var(--text-onpaper-mute); cursor:pointer; transition:all .15s;
+  }
+  .filter-btn.active,.filter-btn:hover{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+
+  .gallery{ display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:110px; gap:16px; }
+  @media(max-width:760px){ .gallery{ grid-template-columns:repeat(2,1fr); } }
+  .g-item{
+    border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;
+    color:var(--ink); position:relative; overflow:hidden; cursor:pointer;
+  }
+  .g-item .tag{ font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:.06em; }
+  .g-item .title{ font-family:var(--font-display); font-size:16px; text-transform:uppercase; }
+  .g1{ grid-column:span 2; grid-row:span 2; background:var(--yellow); }
+  .g2{ grid-column:span 2; grid-row:span 1; background:var(--coral); color:var(--paper); }
+  .g3{ grid-column:span 1; grid-row:span 2; background:var(--teal); }
+  .g4{ grid-column:span 1; grid-row:span 1; background:#DCD8C8; }
+  .g5{ grid-column:span 2; grid-row:span 1; background:#DCD8C8; }
+  .g6{ grid-column:span 1; grid-row:span 2; background:var(--coral); color:var(--paper); }
+  .g7{ grid-column:span 1; grid-row:span 1; background:var(--yellow); }
+  .g8{ grid-column:span 2; grid-row:span 1; background:var(--teal); }
+
+  /* ---------- PROCESS ---------- */
+  .process{ display:grid; grid-template-columns:repeat(3,1fr); gap:40px; margin-top:64px; }
+  @media(max-width:760px){ .process{ grid-template-columns:1fr; } }
+  .step .step-num{ font-family:var(--font-display); font-size:52px; color:rgba(242,239,228,.15); }
+  .step h3{ font-size:22px; margin:6px 0 10px; }
+  .step p{ font-size:14px; color:var(--text-onink-mute); max-width:280px; }
+
+  /* ---------- TESTIMONIAL ---------- */
+  .testimonial{ text-align:center; max-width:760px; margin:0 auto; }
+  .testimonial blockquote{ font-family:var(--font-display); font-size:clamp(24px,3.4vw,38px); line-height:1.25; text-transform:none; }
+  .testimonial cite{ display:block; margin-top:28px; font-family:var(--font-mono); font-size:13px; color:var(--text-onink-mute); font-style:normal; text-transform:uppercase; letter-spacing:.05em; }
+
+  /* ---------- CONTACT / FOOTER ---------- */
+  .contact{ background:var(--coral); color:var(--ink); border-radius:32px; margin:0 20px; padding:90px 40px; text-align:center; }
+  @media(max-width:700px){ .contact{ margin:0; border-radius:0; padding:70px 20px; } }
+  .contact h2{ font-size:clamp(36px,6vw,64px); color:var(--ink); }
+  .contact p{ font-size:16px; max-width:420px; margin:18px auto 34px; opacity:.85; }
+  .contact .btn{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+
+  footer{ padding:50px 0 30px; }
+  .footer-grid{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px; font-family:var(--font-mono); font-size:12px; color:var(--text-onink-mute); text-transform:uppercase; letter-spacing:.05em; }
+  .footer-social{ display:flex; gap:24px; }
+  .footer-social a:hover{ color:var(--coral); }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo">OTHMANE'S <span>PORTFOLIO</span></div>
+    <div class="nav-links">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#process">Process</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a href="https://www.upwork.com/freelancers/~01d7c5d23137de23aa" target="_blank" rel="noopener" class="btn nav-cta">Start a project</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">Design · Video · Publishing</div>
+        <h1>I make things people<br>can't <em>scroll past.</em></h1>
+        <p class="lede">Graphic design, video editing, YouTube thumbnails, brand identity, social content, and KDP book &amp; coloring book design — one creative studio, every format your audience sees.</p>
+        <div class="hero-actions">
+          <a href="#work" class="btn">See the work</a>
+          <a href="#contact" class="btn ghost">Get in touch</a>
+        </div>
+      </div>
+      <div class="format-shelf">
+        <div class="fcard fc1"><span class="tag">16:9</span><span class="fmt">Thumbnail</span></div>
+        <div class="fcard fc2"><span class="tag">2:3</span><span class="fmt">Book Cover</span></div>
+        <div class="fcard fc3"><span class="tag">1:1</span><span class="fmt">Social Post</span></div>
+        <div class="fcard fc4"><span class="tag">9:16</span><span class="fmt">Reel Edit</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee">
+    <div class="marquee-track">
+      <span>Branding <em>·</em> Thumbnails <em>·</em> Video Editing <em>·</em> Social Content <em>·</em> KDP Books <em>·</em> Coloring Books <em>·</em></span>
+      <span>Branding <em>·</em> Thumbnails <em>·</em> Video Editing <em>·</em> Social Content <em>·</em> KDP Books <em>·</em> Coloring Books <em>·</em></span>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="wrap">
+      <div class="eyebrow">What I do</div>
+      <h2 style="font-size:clamp(32px,4.5vw,48px)">Six formats.<br>One consistent voice.</h2>
+      <div class="services-grid">
+        <div class="service"><div class="num">01</div><h3>Graphic Design</h3><p>Posters, packaging, print &amp; digital layouts built to hold attention.</p></div>
+        <div class="service"><div class="num">02</div><h3>Video Editing</h3><p>Cuts, pacing, and motion graphics for YouTube, Reels, and ads.</p></div>
+        <div class="service"><div class="num">03</div><h3>YouTube Thumbnails</h3><p>High-contrast, click-tested thumbnail design that lifts CTR.</p></div>
+        <div class="service"><div class="num">04</div><h3>Branding</h3><p>Logos, color systems, and identity kits that scale across channels.</p></div>
+        <div class="service"><div class="num">05</div><h3>Social Media Posts</h3><p>On-brand templates for feeds, stories, and carousels.</p></div>
+        <div class="service"><div class="num">06</div><h3>KDP &amp; Coloring Books</h3><p>Interior layouts and covers ready for Kindle Direct Publishing.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section id="work">
+    <div class="wrap">
+      <div class="work">
+        <div class="eyebrow">Selected work</div>
+        <h2>A shelf of<br>recent projects</h2>
+        <div class="filters">
+          <button class="filter-btn active">All</button>
+          <button class="filter-btn">Thumbnails</button>
+          <button class="filter-btn">Branding</button>
+          <button class="filter-btn">Social</button>
+          <button class="filter-btn">Books</button>
+          <button class="filter-btn">Video</button>
+        </div>
+        <div class="gallery">
+          <div class="g-item g1"><span class="tag">Thumbnail</span><span class="title">Project 01</span></div>
+          <div class="g-item g2"><span class="tag">Branding</span><span class="title">Project 02</span></div>
+          <div class="g-item g3"><span class="tag">Book Cover</span><span class="title">Project 03</span></div>
+          <div class="g-item g4"><span class="tag">Social</span><span class="title">Project 04</span></div>
+          <div class="g-item g5"><span class="tag">Video</span><span class="title">Project 05</span></div>
+          <div class="g-item g6"><span class="tag">Coloring Book</span><span class="title">Project 06</span></div>
+          <div class="g-item g7"><span class="tag">Thumbnail</span><span class="title">Project 07</span></div>
+          <div class="g-item g8"><span class="tag">Branding</span><span class="title">Project 08</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section id="process">
+    <div class="wrap">
+      <div class="eyebrow">How it works</div>
+      <h2 style="font-size:clamp(32px,4.5vw,48px)">Brief to delivery,<br>no guesswork.</h2>
+      <div class="process">
+        <div class="step"><div class="step-num">01</div><h3>Brief</h3><p>We define the goal, audience, and formats needed — thumbnail, cover, or full brand kit.</p></div>
+        <div class="step"><div class="step-num">02</div><h3>Create</h3><p>Concepts and drafts come back fast, with room for one or two rounds of revision.</p></div>
+        <div class="step"><div class="step-num">03</div><h3>Deliver</h3><p>Final files handed off in every size and format your platform needs.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section>
+    <div class="wrap testimonial">
+      <blockquote>"Our click-through rate on thumbnails jumped within the first week. Fast, sharp, and always on-brand."</blockquote>
+      <cite>— Client Name, Channel / Company</cite>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact">
+        <div class="eyebrow" style="color:var(--ink); justify-content:center;">Let's work together</div>
+        <h2>Got a project<br>in mind?</h2>
+        <p>Tell me what you're building — a channel, a brand, a book — and I'll tell you what it needs.</p>
+        <a href="https://www.upwork.com/freelancers/~01d7c5d23137de23aa" target="_blank" rel="noopener" class="btn">Hire me on Upwork</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-grid">
+    <div>© 2026 Your Name. All rights reserved.</div>
+    <div class="footer-social">
+      <a href="#">Instagram</a>
+      <a href="#">Behance</a>
+      <a href="#">YouTube</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Simple filter interaction for the work gallery (visual only —
+  // wire this to real category data/tags when you add real projects).
+  document.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
